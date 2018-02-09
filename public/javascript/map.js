@@ -2,10 +2,11 @@ $(document).ready(function(){
   
   var map;
   var geocoder = new google.maps.Geocoder();
-
+  var pos;
+  
   function geocodeAddress() {
     var address = document.getElementById('address').value;
-
+    
     geocoder.geocode({'address': address}, function(results, status) {
       
       if (status === 'OK') {
@@ -26,8 +27,8 @@ $(document).ready(function(){
       }
     });
   }
-
-
+  
+  
   function startMap() {
     var ironhackBCN = {
       lat: 41.3977381, 
@@ -39,22 +40,40 @@ $(document).ready(function(){
           center: ironhackBCN
         }
       );
-    chargeRestaurants();
-  };
+      chargeRestaurants();
+      var infoWindow = new google.maps.InfoWindow({map: map});
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
   
-  function chargeRestaurants(){
-    $.ajax({
-      url: "http://localhost:3000/api",
-      method: "GET",
-      success: function (response) {
-        
-        response.forEach(function(restaurant){
-          console.log(restaurant);
-          restaurant = new google.maps.Marker({
-            position: {
-              lat: restaurant.location.coordinates[1], 
-              lng: restaurant.location.coordinates[0], 
-            },
+          infoWindow.setPosition(pos);
+          infoWindow.setContent('Location found.');
+          map.setCenter(pos);
+        }, function() {
+          handleLocationError(true, infoWindow, map.getCenter());
+        });
+      } else {
+        // Browser doesn't support Geolocation
+        handleLocationError(false, infoWindow, map.getCenter());
+      }
+    };
+    
+    function chargeRestaurants(){
+      $.ajax({
+        url: "http://localhost:3000/api",
+        method: "GET",
+        success: function (response) {
+          
+          response.forEach(function(restaurant){
+            console.log(restaurant);
+            restaurant = new google.maps.Marker({
+              position: {
+                lat: restaurant.location.coordinates[1], 
+                lng: restaurant.location.coordinates[0], 
+              },
             map: map,
             title: restaurant.name            
           });
@@ -65,6 +84,30 @@ $(document).ready(function(){
       },
     })
   }
+
+//   function searchAround(){
+//     $.ajax({
+//       url: "http://localhost:3000/api/search",
+//       method: "GET",
+//       success: function (response) {
+//         // console.log(response)
+//         // response.forEach(function(restaurant){
+//         //   console.log(restaurant);
+//         //   restaurant = new google.maps.Marker({
+//         //     position: {
+//         //       lat: pos.lat, 
+//         //       lng: pos.lng, 
+//         //     },
+//         //   map: map,
+//         //   title: restaurant.name            
+//         // });
+//       });
+//      },
+//     error: function (err) {
+//       console.log(err);
+//     },
+//   })
+// }
   
   
 
