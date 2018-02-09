@@ -20,7 +20,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Subir restaurant</h5>
-          <form id="form" >
+          <form id="form" action="/" method="POST" >
             <label>Name:</label>
             <input id="name" type="" name="name" placeholder="Name">
             <label>Description:</label>
@@ -40,7 +40,7 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">Search around</h5>
-          <form id="search">
+          <form id="search" action="/search/?q=lat<%= %>lng<%= %>" method="POST" >
             <input id="maxDistance" type="" name="address" placeholder="search in meters">
             <input type="submit" name="">
           </form>
@@ -58,6 +58,4 @@
 </style>
 
 <%- contentFor('scripts') %>
-<script>
-  console.log('Tu codigo tiene que ir aqui')
-</script>
+<script type="text/javascript" src="/javascript/map.js"></script>

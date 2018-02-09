@@ -2,8 +2,6 @@ var express = require('express');
 var router = express.Router();
 var Restaurant = require('../../models/restaurant');
 
-
-
 // Listar restaurantes
 router.get('/', (req, res) => {
 	Restaurant.find((error, restaurants) => {
